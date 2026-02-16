@@ -16,6 +16,7 @@ services:
       - kyapakaon-network
 
   backend:
+    image: arsalananwer0/kyapakaon-backend:latest
     build: 
       context: ./server
       dockerfile: Dockerfile
@@ -33,6 +34,7 @@ services:
       - kyapakaon-network
 
   frontend:
+    image: arsalananwer0/kyapakaon-frontend:latest
     build:
       context: ./client
       dockerfile: Dockerfile
