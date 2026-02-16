@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb
+    restart: unless-stopped
+    ports: 
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: kyapakaon
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - kyapakaon-network
+
+  backend:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: back-end-c
+    restart: unless-stopped
+    ports:
+      - '5001:5001'
+    environment: 
+        PORT: 5001
+        MONGO_URI: mongodb://admin:admin123@mongodb:27017/kyapakaon?authSource=admin
+        NODE_ENV: production
+    depends_on:
+      - mongodb
+    networks: 
+      - kyapakaon-network
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - '3000:80'
+    depends_on:
+      - backend
+    networks:
+      - kyapakaon-network
+
+networks:
+  kyapakaon-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local    
+
+    
+        
+
